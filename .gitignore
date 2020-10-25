@@ -1,0 +1,7 @@
+/.idea/
+*.iml
+
+# Project exclude paths
+/org.istio.GRPCLibraryBackend/target/
+/org.istio.GRPCLibraryFunctions/target/
+/org.istio.JWTWebLibrary/target/

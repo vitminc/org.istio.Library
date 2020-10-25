@@ -1,0 +1,33 @@
+syntax = "proto3";
+
+option java_multiple_files = true;
+option java_package = "org.istio.library.generated";
+option java_outer_classname = "LibraryFunctions";
+
+package library;
+
+service Library {
+  rpc FindBooks (SearchRequest) returns (SearchReply) {}
+}
+
+message Book {
+  string isbn = 1;
+  string name = 2;
+  string author = 3;
+}
+
+message SearchReply {
+  repeated Book books = 1;
+}
+
+message SearchRequest {
+  string term = 1;
+  SearchType type = 2;
+  enum SearchType {
+    ALL  = 0;
+    ISBN = 1;
+    NAME = 2;
+    AUTHOR = 3;
+  }
+
+}
