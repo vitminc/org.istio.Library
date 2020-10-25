@@ -1,6 +1,7 @@
 package org.istio.library.controller;
 
 import org.keycloak.KeycloakSecurityContext;
+import org.keycloak.representations.IDToken;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -27,12 +28,14 @@ public class LibraryController {
     }
 
     @GetMapping(value = "/")
-    public String getHome() {
+    public String getHome(Model model) {
+        configCommonAttributes(model);
         return "index";
     }
 
     @RequestMapping(value = {"/search", "/search/{term}"}, method = RequestMethod.GET)
     public String checkOrderStatus(Model model, @PathVariable("term") Optional<String> term) {
+        configCommonAttributes(model);
         List<org.istio.library.model.Book> resultList = libraryAccess.findBooks(term.isPresent() ? term.get() : "");
         model.addAttribute("books", resultList);
         return "search";
@@ -59,7 +62,11 @@ public class LibraryController {
     }
 
     private void configCommonAttributes(Model model) {
-        model.addAttribute("name", getKeycloakSecurityContext().getIdToken().getGivenName());
+        KeycloakSecurityContext keycloakSecurityContext = getKeycloakSecurityContext();
+        if (keycloakSecurityContext!=null) {
+            String name = keycloakSecurityContext.getIdToken().getPreferredUsername();
+            model.addAttribute("name", name);
+        }
     }
 
     private KeycloakSecurityContext getKeycloakSecurityContext() {
