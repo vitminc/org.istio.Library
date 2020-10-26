@@ -9,9 +9,9 @@ import io.grpc.*;
 import static io.grpc.Metadata.ASCII_STRING_MARSHALLER;
 
 public class JWTServerInterceptor implements ServerInterceptor {
-    public static final Metadata.Key<String> JWT_KEY = Metadata.Key.of("jwt", ASCII_STRING_MARSHALLER);
     public static final Context.Key<DecodedJWT> CLIENT_ID_CONTEXT_KEY = Context.key("clientId");
 
+    private static final Metadata.Key<String> JWT_KEY = Metadata.Key.of("jwt", ASCII_STRING_MARSHALLER);
     private static final ServerCall.Listener NOOP_LISTENER = new ServerCall.Listener() {};
 
     @Override
@@ -24,17 +24,13 @@ public class JWTServerInterceptor implements ServerInterceptor {
 
         DecodedJWT jwt = validateJWT(token);
         if (jwt==null) {
-            System.err.println("No jwt token");
             // In case of deny
-            //serverCall.close(Status.UNAUTHENTICATED.withDescription("JWT Token is missing from Metadata"), metadata);
-            //return NOOP_LISTENER;
+            // serverCall.close(Status.UNAUTHENTICATED.withDescription("JWT Token is missing from Metadata"), metadata);
+            // return NOOP_LISTENER;
         } else {
-            String authority = serverCall.getAuthority();
-            System.err.println(authority);
             Context context = Context.current().withValue(CLIENT_ID_CONTEXT_KEY, jwt);
             return Contexts.interceptCall(context, serverCall, metadata, serverCallHandler);
         }
-
         return serverCallHandler.startCall(serverCall, metadata);
     }
 
