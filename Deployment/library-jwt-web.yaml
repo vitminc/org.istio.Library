@@ -1,0 +1,78 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: jwt-web-application-properties-config-map
+data:
+  application.properties: |
+    [
+     server.port: 8080
+     keycloak.realm: library-realm
+     keycloak.resource: library-app
+     keycloak.auth-server-url: http://127.0.0.1:8180/auth
+     keycloak.ssl-required: external
+     keycloak.public-client: true
+     keycloak.principal-attribute: preferred_username
+
+     library.backend-host: grpc-library-service
+     library.backend-port: 10443
+    ]
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: jwt-web-deployment 
+  labels:
+    app: jwt-web 
+spec:
+  replicas: 1 
+  selector:
+    matchLabels:
+      app: jwt-web
+  template:
+    metadata:
+      labels:
+        app: jwt-web
+    spec:
+      containers:
+      - name: jwt-web
+        image: vitminc/jwt-web-library
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 8080
+        volumeMounts:
+          - name: jwt-web-application-properties
+            mountPath: "/opt/application.properties"
+            subPath: "application.properties"    
+      volumes:
+        - name: jwt-web-application-properties
+          configMap:
+            name: jwt-web-application-properties-config-map
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: jwt-web-service
+spec:
+ selector:
+  app: jwt-web
+ ports:
+ - name: http
+   protocol: TCP
+   port: 80
+   targetPort: 8080
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: jwt-web-virtual-service
+spec:
+  hosts:
+  - library.test.com                                
+  gateways:
+  - library-gateway.istio-system.svc.cluster.local    
+  http:
+  - route:                                          
+    - destination:
+        host: jwt-web-service
+        port:
+          number: 80

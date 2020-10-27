@@ -7,6 +7,9 @@ import org.istio.library.generated.Book;
 import org.istio.library.generated.LibraryGrpc;
 import org.istio.library.generated.SearchReply;
 import org.istio.library.generated.SearchRequest;
+import org.springframework.context.EnvironmentAware;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.core.env.Environment;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -23,12 +26,11 @@ public class LibraryAccess {
     private ManagedChannel channel;
     private LibraryGrpc.LibraryBlockingStub blockingStub;
 
-    public LibraryAccess() {
-        String hostname = "127.0.0.1";
-        int port = 50051;
+
+    public LibraryAccess(String host, int port) {
 
         JWTClientInterceptor clientInterceptor = new JWTClientInterceptor();
-        this.channel = ManagedChannelBuilder.forAddress(hostname, port)
+        this.channel = ManagedChannelBuilder.forAddress(host, port)
                 .usePlaintext()
                 .intercept(clientInterceptor)
                 .build();

@@ -1,0 +1,3 @@
+
+#inject istio sidecards
+kubectl label namespace library istio-injection=enabled
