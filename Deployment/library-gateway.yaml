@@ -15,4 +15,4 @@ spec:
       mode: SIMPLE # enables HTTPS on this port
       credentialName: library-credential
     hosts:
-    - "*"
+    - "*.test.com"

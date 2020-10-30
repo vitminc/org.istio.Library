@@ -8,13 +8,14 @@ data:
      server.port: 8080
      keycloak.realm: library-realm
      keycloak.resource: library-app
-     keycloak.auth-server-url: http://keycloak.10.64.140.45.nip.io:8080/auth
+     keycloak.auth-server-url: https://keycloak.test.com/auth
      keycloak.ssl-required: external
      keycloak.public-client: true
      keycloak.principal-attribute: preferred_username
 
      library.backend-host: grpc-library-service
      library.backend-port: 10443
+     library.no-ssl: true
     ]
 ---
 apiVersion: apps/v1
