@@ -7,7 +7,7 @@ import java.util.stream.Collectors;
 public class UserRepository {
 
     private final List<User> users = Arrays.asList(
-            new User("10001", "backenduser", "backenduser")
+            new User("10001", "buser", "buser")
     );
 
     public List<User> getAllUsers() {

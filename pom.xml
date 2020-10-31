@@ -12,6 +12,7 @@
 		<module>org.istio.GRPCLibraryFunctions</module>
 		<module>org.istio.GRPCLibraryBackend</module>
 		<module>org.istio.JWTWebLibrary</module>
-	</modules>
+        <module>org.istio.KeycloakExternalProvider</module>
+    </modules>
 
 </project>
